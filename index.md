@@ -109,8 +109,7 @@ class GaugesCache {
     fun upsert(metricName: String, 
                metricTags: Tags = Tags.empty(), 
                value: Double): AtomicDouble {
-        val atomic = gaugesCache.computeIfAbsent(
-            GaugeCacheKey(metricName, metricTags)) { AtomicDouble() }
+        val atomic = gaugesCache.computeIfAbsent(GaugeCacheKey(metricName, metricTags)) { AtomicDouble() }
         atomic.set(value)
         return atomic
     }
