@@ -1,6 +1,6 @@
 [Micrometer](https://micrometer.io/) is a metrics facade for JVM-based applications which is widely used and adopted by N26 teams.
 It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of 
-your services and is a default metrics collector in Spring Boot 2.x.
+your services and is a default metrics collector in Spring Boot 2.x (available backport for 1.x).
 
 This page is a small collection of findings and pitfalls we faced during Micrometer integration. 
 
@@ -8,10 +8,14 @@ This page is a small collection of findings and pitfalls we faced during Microme
 * [Know Your Gauges](#know-your-gauges)
 * [Tags Hell](#tags-hell)
 
+* * *
+
 ## Handy Bindings
 
-Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
-that are not very well covered in official documentation. Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
+Micrometer goes with a bunch of handy pre-configured 
+[bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
+that are not very well covered in official documentation. 
+Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
 
 As an example, the following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
 ```kotlin
@@ -21,11 +25,16 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
     ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName)
 ```
 
-Many of these metrics are available and registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) using Spring Boot.
+Many of these metrics are available and registered 
+[out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) 
+using Spring Boot.
+
+* * *
 
 ## Know Your Gauges
 
-If you migrate to Micrometer from StatsDClient you might expect that all you need to do is to replace `statsDClient` with `meterRegistry` and you are done:
+If you migrate to Micrometer from StatsDClient you might expect that all you need to do is to replace `statsDClient` with 
+`meterRegistry` and you are done:
 
 ```kotlin
 // StatsD
@@ -143,6 +152,8 @@ fun main() {
     println(meterRegistry.find(metricName).gauge()!!.value()) // 11.0
 }
 ```
+
+* * *
 
 ## Tags Hell
 
