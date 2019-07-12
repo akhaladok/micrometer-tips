@@ -21,7 +21,58 @@ ExecutorService monitorExecutor(MeterRegistry meterRegistry, ExecutorService exe
 
 ## Know Your Gauges
 
+```java
+class GaugesCache {
 
+    /*
+     * From Micrometer docs (https://micrometer.io/docs/concepts#_gauges):
+     *
+     *    Attempting to construct a gauge with a primitive number or one of its java.lang object forms
+     *    is always incorrect. These numbers are immutable, and thus the gauge cannot ever be changed.
+     *    Attempting to "re-register" the gauge with a different number won’t work, as the registry only
+     *    maintains one meter for each unique combination of name and tags.
+     */
+    private static final Map<GaugeCacheKey, AtomicDouble> gaugesCache = new ConcurrentHashMap<>();
+
+    /**
+     * Update or create a gauge metric with provided value associated with metric name-tags pair.
+     */
+    AtomicDouble upsert(String metricName, Tags metricTags, double value) {
+        AtomicDouble atomic = gaugesCache.computeIfAbsent(
+                GaugeCacheKey.from(metricName, metricTags),
+                __ -> new AtomicDouble());
+        atomic.set(value);
+        return atomic;
+    }
+
+    /**
+     * Combination of metric name and tags should result into unique tuple,
+     * similarly how metric time-series are being * persisted and identified
+     * in a long-term storage.
+     */
+    private static class GaugeCacheKey {
+
+        private final String metricName;
+        private final Tags tags;
+
+        private GaugeCacheKey(String metricName,
+                              Tags tags) {
+            this.metricName = metricName;
+            this.tags = tags;
+        }
+
+        static GaugeCacheKey from(String metricName, Tags tags) {
+            return new GaugeCacheKey(metricName, tags);
+        }
+
+        @Override
+        public boolean equals(Object o) { ... }
+
+        @Override
+        public int hashCode() { ... }
+    }
+}
+```
 
 ## Tags Hell
 
