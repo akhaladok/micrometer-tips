@@ -68,7 +68,7 @@ class GaugesCache {
 
 ```kotlin
 Timer.builder(metricName)
-.tags(tags.map { (k, v) -> Tag.of(k, v.toString()) })
-.register(registry)
-.record(duration)
+    .tags(tags.map { (k, v) -> Tag.of(k, v.toString()) })
+    .register(registry)
+    .record(duration)
 ```
