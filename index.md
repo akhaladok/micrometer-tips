@@ -8,6 +8,8 @@ This page is a small collection of findings and pitfalls you may face during Mic
 
 ## Bindings
 
+
+
 ## Know Your Gauges
 
 ## Tags Hell
