@@ -32,20 +32,12 @@ fun incCounter(metricName: String) = statsDClient.increment(metricName)
 
 // Micrometer
 fun incCounter(metricName: String) = 
-    Counter.builder(metric.getName())
+    Counter.builder(metricName)
            .register(meterRegistry)
            .increment();
 ```
 
-
-This works for `counter` and `histogram`, but not for `gauges`.
-
-During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
-
-```kotlin
-statsDClient.gauge("metrics", value)
-```
-
+This works for `counter` and `histogram`, but... not for `gauges`.
 From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 > A gauge can be made to track any java.lang.Number subtype that is settable, 
 > such as AtomicInteger and AtomicLong found in java.util.concurrent.atomic 
