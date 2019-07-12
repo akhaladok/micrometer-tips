@@ -156,25 +156,32 @@ fun main() {
 
 * * *
 
-
+The following memory-leak was observed on in of our services: 
 ![Memory Leak](/assets/img/memory-leak.png)
 
-Within every call of HystrixWrapper#executeWithMetrics Micrometer creates a histogram based on 
-provided metric name and tags. Each histogram is uniquely identified by metric name and set of 
-tag key/values, therefore any new combination of tag key/values creates a new instance of histogram 
-that remains in memory as long as service instance is running (Micrometer design).
-
+After investigation we found the following code that tracks http-call response durations:
 ```kotlin
-Timer.builder(metricName)
-    .tags(tags.map { (k, v) -> Tag.of(k, v.toString()) })
-    .register(registry)
-    .record(duration)
+fun trackResponseDuration(path: String, method: String, duration: Duration) =
+    meterRegistry.timer(
+        "http.response_duration",
+        Tags.of(
+            Tag.of("path", path),
+            Tag.of("http_method", method)))
+        .record(duration)
 ```
 
+Within every invocation of `trackResponseDuration` Micrometer creates a histogram based on 
+metric name (`http.response_duration`) and provided tags (`path` and `method`). 
+Each histogram is uniquely identified by metric name and set of tag key/values, 
+therefore any new combination of tag key/values creates a new instance of histogram 
+that remains in memory as long as service instance is running (Micrometer design).
+
 Having unbounded set of tag values results into constantly increasing memory consumption. 
-In method above some paths contain card/user UUID. 
-This causes rapid growth of heap memory consumption (linear to number of unique UUIDs in the path). 
-That eventually results into OOM and application crashes.
+In method above some paths contained UUIDs, e.g. `/api/internal/cards/{cards_uuid}/status`. 
+This causes rapid growth of heap memory consumption (linear to number of unique UUIDs in the path) 
+and eventually results into OOM and application crash.
+
+![Unbounded Metrics Set](/assets/img/unbounded_metrics.png)
 
 Couple notes:
 
