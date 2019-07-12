@@ -13,14 +13,10 @@ that can provide insights on your application internals with minimum configurati
 [Many](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter) of these metrics are ready out-of-the-box with Spring Boot.
 
 ```java
-ExecutorService monitorExecutorService(
-	MeterRegistry meterRegistry, 
-	ExecutorService executor, 
-	String executorName) {
-    return ExecutorServiceMetrics.monitor(
-    	meterRegistry, 
-    	executor, 
-    	executorName);
+ExecutorService monitorExecutor(MeterRegistry meterRegistry, 
+								ExecutorService executor, 
+								String executorName) {
+    return ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName);
 }
 ```
 
