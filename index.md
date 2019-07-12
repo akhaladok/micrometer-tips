@@ -8,9 +8,9 @@ This page is a small collection of findings and pitfalls we faced during Microme
 * [Know Your Gauges](#know-your-gauges)
 * [Tags Hell](#tags-hell)
 
-* * *
-
 ## Handy Bindings
+
+* * *
 
 Micrometer goes with a bunch of handy pre-configured 
 [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
@@ -29,9 +29,9 @@ Many of these metrics are available and registered
 [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) 
 using Spring Boot.
 
-* * *
-
 ## Know Your Gauges
+
+* * *
 
 If you migrate to Micrometer from StatsDClient you might expect that all you need to do is to replace `statsDClient` with 
 `meterRegistry` and you are done:
@@ -153,9 +153,9 @@ fun main() {
 }
 ```
 
-* * *
-
 ## Tags Hell
+
+* * *
 
 ![Image of Memory Leak](/assets/img/memory-leak.png)
 
