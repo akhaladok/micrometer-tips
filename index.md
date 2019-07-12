@@ -10,7 +10,7 @@ This page is a small collection of findings and pitfalls you may find useful dur
 ## Bindings
 
 Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder)
-that can provide insights on your application internals (system, datatabase, jvm etc.) with minimum configuration required. 
+that can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
 Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
 
 `ExecutorService` instrumentation:
@@ -64,12 +64,11 @@ class GaugesCache {
 
 ## Tags Hell
 
+![Image of Memory Leak](/assets/img/memory-leak.png)
+
 ```kotlin
-fun executeWithMetrics(path: String, method: String, metrics: Metrics): Try<Response<T>> {
-        return metrics.measureTime(
-            "http.outgoing",
-            "path" to path,
-            "method" to method
-        ) {...}
-}
+Timer.builder(metricName)
+	.tags(tags.map { (k, v) -> Tag.of(k, v.toString()) })
+    .register(registry)
+    .record(duration)
 ```
