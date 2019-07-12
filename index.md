@@ -1,7 +1,8 @@
 [Micrometer](https://micrometer.io/) is an application metrics facade which is widely used and adopted by N26 teams.
-It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of your services and is a default metrics collector in Spring Boot 2.x.
+It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of 
+your services and is a default metrics collector in Spring Boot 2.x.
 
-This page is a small collection of findings and pitfalls you may find useful during Micrometer integration. 
+This page is a small collection of findings and pitfalls we faced during Micrometer integration. 
 
 * [Bindings](#bindings)
 * [Know Your Gauges](#know-your-gauges)
@@ -13,7 +14,7 @@ Micrometer goes with a bunch of handy pre-configured [bindings](https://github.c
 that can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
 Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
 
-`ExecutorService` instrumentation:
+The following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
 ```kotlin
 fun monitorExecutor(meterRegistry: MeterRegistry, 
                     executor: ExecutorService, 
@@ -23,6 +24,7 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
 
 ## Know Your Gauges
 
+If you migrate to `Micrometer` from `StatsDClient` 
 During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
 
 ```kotlin
