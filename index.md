@@ -178,16 +178,16 @@ that remains in memory as long as service instance is running (Micrometer design
 
 Having unbounded set of tag values results into constantly increasing memory consumption. 
 In method above some paths contained UUIDs, e.g. `/api/internal/cards/{cards_uuid}/status`. 
-This causes rapid growth of heap memory consumption (linear to number of unique UUIDs in the path) 
-and eventually results into OOM and application crash.
+This caused rapid growth of heap memory consumption (linear to number of unique UUIDs in the path) 
+and eventually resulted into OOM and application crash.
 
 ![Unbounded Metrics Set](/assets/img/unbounded_metrics.png)
 
-Couple notes:
+Keep in mind metrics are not intended to track fine-grained information or statistics of a service 
+(such as specific requests durations etc.). Use logs or distributed tracing instead. 
+Metrics must provide aggregated view on service internals.
 
-* Metrics are not intended to track fine-grained information or statistics of a service (such as specific requests durations etc.). 
-Use logs or distributed tracing instead, metrics must provide aggregated view on service internals.
-* Unbounded number of histograms results into unbounded number of time series in metrics storage. 
-Some time series storage providers may bill you for every time serie created. 
-Big number of time series also complicates real-time aggregations.
-* Everything mentioned above also applies to counters and gauges.
+Unbounded number of histograms results into unbounded number of time series in durable metrics storage. 
+Some storage providers may bill you for every serie created. Big number of time series also complicates real-time aggregations.
+
+Worth to mention that everything mentioned above also applies to counters and gauges.
