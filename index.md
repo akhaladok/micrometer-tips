@@ -156,7 +156,13 @@ fun main() {
 
 * * *
 
-![Image of Memory Leak](/assets/img/memory-leak.png)
+
+![Memory Leak](/assets/img/memory-leak.png)
+
+Within every call of HystrixWrapper#executeWithMetrics Micrometer creates a histogram based on 
+provided metric name and tags. Each histogram is uniquely identified by metric name and set of 
+tag key/values, therefore any new combination of tag key/values creates a new instance of histogram 
+that remains in memory as long as service instance is running (Micrometer design).
 
 ```kotlin
 Timer.builder(metricName)
@@ -164,3 +170,17 @@ Timer.builder(metricName)
     .register(registry)
     .record(duration)
 ```
+
+Having unbounded set of tag values results into constantly increasing memory consumption. 
+In method above some paths contain card/user UUID. 
+This causes rapid growth of heap memory consumption (linear to number of unique UUIDs in the path). 
+That eventually results into OOM and application crashes.
+
+Couple notes:
+
+* Metrics are not intended to track fine-grained information or statistics of a service (such as specific requests durations etc.). 
+Use logs or distributed tracing instead, metrics must provide aggregated view on service internals.
+* Unbounded number of histograms results into unbounded number of time series in metrics storage. 
+Some time series storage providers may bill you for every time serie created. 
+Big number of time series also complicates real-time aggregations.
+* Everything mentioned above also applies to counters and gauges.
