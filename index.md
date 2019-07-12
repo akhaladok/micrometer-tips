@@ -1,5 +1,6 @@
 [Micrometer](https://micrometer.io/) is an application metrics facade which is widely used and adopted by N26 teams.
 It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of your services and is a default metrics collector in Spring Boot 2.x.
+
 This page is a small collection of findings and pitfalls you may find useful during Micrometer integration. 
 
 * [Bindings](#bindings)
@@ -8,9 +9,9 @@ This page is a small collection of findings and pitfalls you may find useful dur
 
 ## Bindings
 
-Micrometer goes with a bunch of pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder)
-that can provide insights on your application internals with minimum configuration required: system, database, jvm etc. 
-[Many](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter) of these metrics are ready out-of-the-box with Spring Boot.
+Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder)
+that can provide insights on your application internals on system, datatabase, jvm etc. with minimum configuration required. 
+Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
 
 `ExecutorService` instrumentation:
 ```java
@@ -20,6 +21,17 @@ ExecutorService monitorExecutor(MeterRegistry meterRegistry, ExecutorService exe
 ```
 
 ## Know Your Gauges
+
+During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
+
+```java
+statsDClient.gauge("metrics", value);
+```
+
+From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
+> A gauge can be made to track any java.lang.Number subtype that is settable, 
+> such as AtomicInteger and AtomicLong found in java.util.concurrent.atomic 
+> and similar types like Guava’s AtomicDouble.
 
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
