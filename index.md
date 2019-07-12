@@ -1,8 +1,19 @@
 # Micrometer Tips
 
-* [Gauges](#gauges)
+* [Know Your Gauges](#know-your-gauges)
 * [Tags Hell](#tags-hell)
 
-## Gauges
+## Know Your Gauges
 
 ## Tags Hell
+
+```kotlin
+fun executeWithMetrics(path: String,
+					   method: String): Try<Response<T>> {
+        return metrics.measureTime(
+            "http.outgoing",
+            "path" to path,
+            "method" to method
+        ) {...}
+}
+```
