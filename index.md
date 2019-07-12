@@ -35,47 +35,30 @@ From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
-```java
+```kotlin
 class GaugesCache {
-
-    private static final Map<GaugeCacheKey, AtomicDouble> gaugesCache = new ConcurrentHashMap<>();
 
     /**
      * Update or create a gauge metric with provided value associated with metric name-tags pair.
      */
-    AtomicDouble upsert(String metricName, Tags metricTags, double value) {
-        AtomicDouble atomic = gaugesCache.computeIfAbsent(
-                GaugeCacheKey.from(metricName, metricTags),
-                __ -> new AtomicDouble());
-        atomic.set(value);
-        return atomic;
+    fun upsert(metricName: String, metricTags: Tags = Tags.empty(), value: Double): AtomicDouble {
+        val atomic = gaugesCache.computeIfAbsent(GaugeCacheKey(metricName, metricTags)) { AtomicDouble() }
+        atomic.set(value)
+        return atomic
     }
 
     /**
      * Combination of metric name and tags should result into unique tuple,
-     * similarly how metric time-series are being persisted and identified
+     * similarly how metric time-series are being * persisted and identified
      * in a long-term storage.
      */
-    private static class GaugeCacheKey {
+    data class GaugeCacheKey(
+        private val metricName: String,
+        private val tags: Tags
+    )
 
-        private final String metricName;
-        private final Tags tags;
-
-        private GaugeCacheKey(String metricName,
-                              Tags tags) {
-            this.metricName = metricName;
-            this.tags = tags;
-        }
-
-        static GaugeCacheKey from(String metricName, Tags tags) {
-            return new GaugeCacheKey(metricName, tags);
-        }
-
-        @Override
-        public boolean equals(Object o) { ... }
-
-        @Override
-        public int hashCode() { ... }
+    companion object {
+        private val gaugesCache = ConcurrentHashMap<GaugeCacheKey, AtomicDouble>()
     }
 }
 ```
