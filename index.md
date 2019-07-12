@@ -15,10 +15,7 @@ Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/sp
 
 `ExecutorService` instrumentation:
 ```kotlin
-fun monitorExecutor(
-    meterRegistry: MeterRegistry,
-    executor: ExecutorService,
-    executorName: String): ExecutorService = 
+fun monitorExecutor(meterRegistry: MeterRegistry, executor: ExecutorService, executorName: String): ExecutorService = 
     ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName)
 ```
 
