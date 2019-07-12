@@ -24,7 +24,7 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
 
 ## Know Your Gauges
 
-If you migrate to Micrometer from StatsDClient (what is common for N26 teams) you might expect that all you need to do is to replace `statsDClient` with `meterRegistry` and you are done:
+If you migrate to Micrometer from StatsDClient you might expect that all you need to do is to replace `statsDClient` with `meterRegistry` and you are done:
 
 ```kotlin
 // StatsD
