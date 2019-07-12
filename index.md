@@ -4,17 +4,17 @@ your services and is a default metrics collector in Spring Boot 2.x.
 
 This page is a small collection of findings and pitfalls we faced during Micrometer integration. 
 
-* [Bindings](#bindings)
+* [Handy Bindings](#handy-bindings)
 * [Know Your Gauges](#know-your-gauges)
 * [Tags Hell](#tags-hell)
 
-## Bindings
+## Handy Bindings
 
-Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder)
-that can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
+Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
+that are not covered in official documentation. Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
 Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
 
-The following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
+As an example, the following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
 ```kotlin
 fun monitorExecutor(meterRegistry: MeterRegistry, 
                     executor: ExecutorService, 
@@ -25,6 +25,7 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
 ## Know Your Gauges
 
 If you migrate to `Micrometer` from `StatsDClient` 
+
 During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
 
 ```kotlin
