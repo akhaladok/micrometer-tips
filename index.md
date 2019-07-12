@@ -156,7 +156,7 @@ fun main() {
 
 * * *
 
-The following memory-leak was observed on in of our services: 
+The following memory-leak was observed in one of our services: 
 ![Memory Leak](/assets/img/memory-leak.png)
 
 After investigation we found the following code that tracks http-call response durations:
