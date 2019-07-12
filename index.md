@@ -2,7 +2,7 @@
 It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of 
 your services and is a default metrics collector in Spring Boot 2.x (available backport for 1.x).
 
-This page is a small collection of findings and pitfalls we faced during Micrometer integration. 
+This page is a small collection of findings and pitfalls discovered during Micrometer integration. 
 
 * [Handy Bindings](#handy-bindings)
 * [Know Your Gauges](#know-your-gauges)
@@ -15,7 +15,7 @@ This page is a small collection of findings and pitfalls we faced during Microme
 Micrometer goes with a bunch of handy pre-configured 
 [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
 that are not very well covered in official documentation. 
-Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
+Binders can provide insights about application internals (system, database, jvm etc.) with minimum configuration required. 
 
 As an example, the following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
 ```kotlin
@@ -34,10 +34,10 @@ using Spring Boot.
 * * *
 
 If you migrate to Micrometer from StatsDClient you might expect that all you need to do is to replace `statsDClient` with 
-`meterRegistry` and you are done:
+`meterRegistry`:
 
 ```kotlin
-// StatsD
+// StatsDClient
 fun incCounter(metricName: String, value: Double) = 
     statsDClient.increment(metricName, value)
 
@@ -48,7 +48,10 @@ fun incCounter(metricName: String, value: Double) =
            .increment(value);
 ```
 
-This works for `counter` and `histogram`, but.. not for `gauges`:
+This works for counters and histograms, but not for gauges. 
+You can find a warning in documentation that says you can not use primitive numbers with Micrometer gauges:
+![Image of Gauge Warning](/assets/img/gauge-warning.png)
+
 ```kotlin
 fun main() {
     val metricName = "my-gauge"
@@ -67,11 +70,7 @@ From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 > such as AtomicInteger and AtomicLong found in java.util.concurrent.atomic 
 > and similar types like Guava’s AtomicDouble.
 
-You can find a warning message in documentation that says you can not use primitive numbers with Micrometer gauges:
-![Image of Gauge Warning](/assets/img/gauge-warning.png)
-
-This means that we can change gauge value ONLY via instance of settable type (atomic) your metric was first time registered with. 
-
+This means gauge metric value can be changed only via instance of settable type (atomic) that was used during first metric registration. 
 Compare the following scenarious:
 
 ```kotlin
