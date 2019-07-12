@@ -8,8 +8,7 @@
 ## Tags Hell
 
 ```kotlin
-fun executeWithMetrics(path: String,
-					   method: String): Try<Response<T>> {
+fun executeWithMetrics(path: String, method: String, metrics: Metrics): Try<Response<T>> {
         return metrics.measureTime(
             "http.outgoing",
             "path" to path,
