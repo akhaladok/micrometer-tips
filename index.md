@@ -28,21 +28,24 @@ If you migrate to Micrometer from StatsDClient (what is common for N26 teams) yo
 
 ```kotlin
 // StatsD
-fun incCounter(metricName: String) = statsDClient.increment(metricName)
+fun incCounter(metricName: String, value: Double) = 
+    statsDClient.increment(metricName, value)
 
 // Micrometer
-fun incCounter(metricName: String) = 
+fun incCounter(metricName: String, value: Double) = 
     Counter.builder(metricName)
            .register(meterRegistry)
-           .increment();
+           .increment(value);
 ```
 
-This works for `counter` and `histogram`, but... not for `gauges`.
+This works for `counter` and `histogram`, but.. not for `gauges`.
+
 From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 > A gauge can be made to track any java.lang.Number subtype that is settable, 
 > such as AtomicInteger and AtomicLong found in java.util.concurrent.atomic 
 > and similar types like Guava’s AtomicDouble.
 
+There is even a warning message in documentation that says you can not use primitive numbers with Micrometer gauges:
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
 ```kotlin
