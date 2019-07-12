@@ -14,10 +14,12 @@ that can provide insights on your application internals on system, datatabase, j
 Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
 
 `ExecutorService` instrumentation:
-```java
-ExecutorService monitorExecutor(MeterRegistry meterRegistry, ExecutorService executor, String executorName) {
-    return ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName);
-}
+```kotlin
+fun monitorExecutor(
+    meterRegistry: MeterRegistry,
+    executor: ExecutorService,
+    executorName: String): ExecutorService = 
+    ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName)
 ```
 
 ## Know Your Gauges
@@ -49,7 +51,7 @@ class GaugesCache {
 
     /**
      * Combination of metric name and tags should result into unique tuple,
-     * similarly how metric time-series are being * persisted and identified
+     * similarly how metric time-series are being persisted and identified
      * in a long-term storage.
      */
     data class GaugeCacheKey(
