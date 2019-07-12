@@ -21,17 +21,11 @@ ExecutorService monitorExecutor(MeterRegistry meterRegistry, ExecutorService exe
 
 ## Know Your Gauges
 
+![Image of Gauge Warning](/assets/img/gauge-warning.png)
+
 ```java
 class GaugesCache {
 
-    /*
-     * From Micrometer docs (https://micrometer.io/docs/concepts#_gauges):
-     *
-     *    Attempting to construct a gauge with a primitive number or one of its java.lang object forms
-     *    is always incorrect. These numbers are immutable, and thus the gauge cannot ever be changed.
-     *    Attempting to "re-register" the gauge with a different number won’t work, as the registry only
-     *    maintains one meter for each unique combination of name and tags.
-     */
     private static final Map<GaugeCacheKey, AtomicDouble> gaugesCache = new ConcurrentHashMap<>();
 
     /**
@@ -47,7 +41,7 @@ class GaugesCache {
 
     /**
      * Combination of metric name and tags should result into unique tuple,
-     * similarly how metric time-series are being * persisted and identified
+     * similarly how metric time-series are being persisted and identified
      * in a long-term storage.
      */
     private static class GaugeCacheKey {
