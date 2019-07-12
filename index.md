@@ -49,7 +49,7 @@ fun incCounter(metricName: String, value: Double) =
 ```
 
 This works for counters and histograms, but not for gauges. 
-You can find a warning in documentation that says you can not use primitive numbers with Micrometer gauges:
+You can find a warning in Micrometer documentation that says you can not use primitive numbers with Micrometer gauges:
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
 ```kotlin
@@ -106,7 +106,7 @@ fun main() {
 
 ```
 
-We can workaround atomic settable types restriction by keeping them in a cache:
+For long-running services we can use the following gauges cache to keep mapping between metric and appropriate atomic-value reference:
 ```kotlin
 class GaugesCache {
 
