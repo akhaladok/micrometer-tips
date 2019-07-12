@@ -11,8 +11,7 @@ This page is a small collection of findings and pitfalls we faced during Microme
 ## Handy Bindings
 
 Micrometer goes with a bunch of handy pre-configured [bindings](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder) 
-that are not covered in official documentation. Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
-Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) with Spring Boot.
+that are not very well covered in official documentation. Binders can provide insights on your application internals (system, database, jvm etc.) with minimum configuration required. 
 
 As an example, the following `ExecutorService` instrumentation will provide metrics for internal tasks-queue and thread-pool:
 ```kotlin
@@ -21,6 +20,8 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
                     executorName: String): ExecutorService = 
     ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName)
 ```
+
+Many of these metrics are available and registered [out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) using Spring Boot.
 
 ## Know Your Gauges
 
@@ -38,7 +39,7 @@ fun incCounter(metricName: String, value: Double) =
            .increment(value);
 ```
 
-This works for `counter` and `histogram`, but.. not for `gauges`.
+This works for `counter` and `histogram`, but.. not for `gauges`:
 ```kotlin
 fun main() {
     val metricName = "my-gauge"
@@ -57,10 +58,10 @@ From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 > such as AtomicInteger and AtomicLong found in java.util.concurrent.atomic 
 > and similar types like Guava’s AtomicDouble.
 
-There is even a warning message in documentation that says you can not use primitive numbers with Micrometer gauges:
+You can find a warning message in documentation that says you can not use primitive numbers with Micrometer gauges:
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
-
+We can workaround atomics limitation 
 ```kotlin
 class GaugesCache {
 
