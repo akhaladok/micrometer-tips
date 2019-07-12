@@ -49,6 +49,17 @@ There is even a warning message in documentation that says you can not use primi
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
 ```kotlin
+val meterRegistry = SimpleMeterRegistry()
+
+meterRegistry.gauge("my-gauge", 12.0)
+println(meterRegistry.find("my-gauge").gauge()!!.value()) // 12.0
+
+meterRegistry.gauge("my-gauge", 11.0)
+println(meterRegistry.find("my-gauge").gauge()!!.value()) // exptecting 11.0 but got 12.0
+```
+
+
+```kotlin
 class GaugesCache {
 
     /**
