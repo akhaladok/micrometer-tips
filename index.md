@@ -12,16 +12,16 @@ Micrometer goes with a bunch of pre-configured [bindings](https://github.com/mic
 that can provide insights on your application internals with minimum configuration required: system, database, jvm etc. 
 [Many](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter) of these metrics are ready out-of-the-box with Spring Boot.
 
-To get `ExecutorService` tasks and pool metrics:
+`ExecutorService` instrumentation:
 ```java
-ExecutorService monitorExecutor(MeterRegistry meterRegistry, 
-								ExecutorService executor, 
-								String executorName) {
+ExecutorService monitorExecutor(MeterRegistry meterRegistry, ExecutorService executor, String executorName) {
     return ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName);
 }
 ```
 
 ## Know Your Gauges
+
+
 
 ## Tags Hell
 
