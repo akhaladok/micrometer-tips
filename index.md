@@ -1,4 +1,4 @@
-[Micrometer](https://micrometer.io/) is an application metrics facade which is widely used and adopted by N26 teams.
+[Micrometer](https://micrometer.io/) is a metrics facade for JVM-based applications which is widely used and adopted by N26 teams.
 It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of 
 your services and is a default metrics collector in Spring Boot 2.x.
 
@@ -129,7 +129,9 @@ class GaugesCache {
         private val gaugesCache = ConcurrentHashMap<GaugeCacheKey, AtomicDouble>()
     }
 }
+```
 
+```kotlin
 fun main() {
     val metricName = "my-gauge"
     val meterRegistry = SimpleMeterRegistry()
