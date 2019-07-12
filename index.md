@@ -1,3 +1,5 @@
+![Image for Micrometer](/assets/img/micrometer.png)
+
 [Micrometer](https://micrometer.io/) is an application metrics facade which is widely used and adopted by N26 teams.
 It goes with a plenty of instrumentations for various metric backend datastores, bindings to different components of 
 your services and is a default metrics collector in Spring Boot 2.x.
