@@ -15,7 +15,9 @@ Many of these metrics are registered [out-of-the-box]((https://docs.spring.io/sp
 
 `ExecutorService` instrumentation:
 ```kotlin
-fun monitorExecutor(meterRegistry: MeterRegistry, executor: ExecutorService, executorName: String): ExecutorService = 
+fun monitorExecutor(meterRegistry: MeterRegistry, 
+                    executor: ExecutorService, 
+                    executorName: String): ExecutorService = 
     ExecutorServiceMetrics.monitor(meterRegistry, executor, executorName)
 ```
 
@@ -23,8 +25,8 @@ fun monitorExecutor(meterRegistry: MeterRegistry, executor: ExecutorService, exe
 
 During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
 
-```java
-statsDClient.gauge("metrics", value);
+```kotlin
+statsDClient.gauge("metrics", value)
 ```
 
 From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
@@ -38,10 +40,14 @@ From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 class GaugesCache {
 
     /**
-     * Update or create a gauge metric with provided value associated with metric name-tags pair.
+     * Update or create a gauge metric with provided 
+     * value associated with metric name-tags pair.
      */
-    fun upsert(metricName: String, metricTags: Tags = Tags.empty(), value: Double): AtomicDouble {
-        val atomic = gaugesCache.computeIfAbsent(GaugeCacheKey(metricName, metricTags)) { AtomicDouble() }
+    fun upsert(metricName: String, 
+               metricTags: Tags = Tags.empty(), 
+               value: Double): AtomicDouble {
+        val atomic = gaugesCache.computeIfAbsent(
+            GaugeCacheKey(metricName, metricTags)) { AtomicDouble() }
         atomic.set(value)
         return atomic
     }
