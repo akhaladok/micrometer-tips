@@ -49,14 +49,19 @@ There is even a warning message in documentation that says you can not use primi
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
 ```kotlin
-val meterRegistry = SimpleMeterRegistry()
+fun main() {
+    val metricName = "my-gauge"
+    val meterRegistry = SimpleMeterRegistry()
 
-meterRegistry.gauge("my-gauge", 12.0)
-println(meterRegistry.find("my-gauge").gauge()!!.value()) // 12.0
+    meterRegistry.gauge(metricName, 12.0)
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 12.0
 
-meterRegistry.gauge("my-gauge", 11.0)
-println(meterRegistry.find("my-gauge").gauge()!!.value()) // exptecting 11.0 but got 12.0
+    meterRegistry.gauge(metricName, 11.0)
+    println(meterRegistry.find(metricName).gauge()!!.value()) // expecting 11.0 but got 12.0
+}
 ```
+
+
 
 
 ```kotlin
@@ -88,6 +93,18 @@ class GaugesCache {
     companion object {
         private val gaugesCache = ConcurrentHashMap<GaugeCacheKey, AtomicDouble>()
     }
+}
+
+fun main() {
+    val metricName = "my-gauge"
+    val meterRegistry = SimpleMeterRegistry()
+    val gaugesCache = GaugesCache()
+
+    meterRegistry.gauge(metricName, gaugesCache.upsert(metricName, value = 12.0))
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 12.0
+
+    meterRegistry.gauge(metricName, gaugesCache.upsert(metricName, value = 11.0))
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 11.0
 }
 ```
 
