@@ -173,7 +173,7 @@ fun trackResponseDuration(path: String, method: String, duration: Duration) =
 Within every invocation of `trackResponseDuration` Micrometer creates a histogram based on 
 metric name (`http.response_duration`) and provided tags (`path` and `method`). 
 Each histogram is uniquely identified by metric name and set of tag key/values, 
-therefore any unique combination of tag key/values creates a new instance of histogram 
+therefore any new unique combination of tag key/values creates a new instance of histogram 
 that remains in memory as long as service instance is running (Micrometer design).
 
 Having unbounded set of tag values results into constantly increasing memory consumption. 
