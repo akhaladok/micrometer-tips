@@ -24,7 +24,21 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
 
 ## Know Your Gauges
 
-If you migrate to `Micrometer` from `StatsDClient` 
+If you migrate to Micrometer from StatsDClient (what is common for N26 teams) you might expect that all you need to do is to replace `statsDClient` with `meterRegistry` and you are done:
+
+```kotlin
+// StatsD
+fun incCounter(metricName: String) = statsDClient.increment(metricName)
+
+// Micrometer
+fun incCounter(metricName: String) = 
+    Counter.builder(metric.getName())
+           .register(meterRegistry)
+           .increment();
+```
+
+
+This works for `counter` and `histogram`, but not for `gauges`.
 
 During the migration from `StatsDClient` to `Micrometer` we found how different the latter handles gauge-metrics.
 
