@@ -49,7 +49,7 @@ fun main() {
     println(meterRegistry.find(metricName).gauge()!!.value()) // 12.0
 
     meterRegistry.gauge(metricName, 11.0)
-    println(meterRegistry.find(metricName).gauge()!!.value()) // expecting 11.0 but got 12.0
+    println(meterRegistry.find(metricName).gauge()!!.value()) // expected 11.0 but got 12.0
 }
 ```
 
@@ -61,7 +61,44 @@ From Micrometer [documentation](https://micrometer.io/docs/concepts#_gauges):
 You can find a warning message in documentation that says you can not use primitive numbers with Micrometer gauges:
 ![Image of Gauge Warning](/assets/img/gauge-warning.png)
 
-We can workaround atomics limitation 
+This means that we can change gauge value ONLY via instance of settable type (atomic) your metric was first time registered with. 
+
+Compare the following scenarious:
+
+```kotlin
+fun main() {
+    val metricName = "my-gauge"
+    val meterRegistry = SimpleMeterRegistry()
+
+    meterRegistry.gauge(metricName, AtomicDouble(12.0))
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 12.0
+
+    // reference to the original value is not preserved 
+    // gauge value change ignored
+    meterRegistry.gauge(metricName, AtomicDouble(11.0))
+    println(meterRegistry.find(metricName).gauge()!!.value()) // expected 11.0 but still got 12.0
+}
+```
+
+```kotlin
+fun main() {
+    val metricName = "my-gauge"
+    val meterRegistry = SimpleMeterRegistry()
+    val value = AtomicDouble()
+
+    meterRegistry.gauge(metricName, value)
+
+    value.set(12.0)
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 12.0
+
+    // change gauge value via original reference
+    value.set(11.0)
+    println(meterRegistry.find(metricName).gauge()!!.value()) // 11.0
+}
+
+```
+
+We can workaround atomic settable types restriction by keeping them in a cache:
 ```kotlin
 class GaugesCache {
 
