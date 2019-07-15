@@ -26,7 +26,7 @@ fun monitorExecutor(meterRegistry: MeterRegistry,
 ```
 
 Many of these metrics are available and registered 
-[out-of-the-box]((https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter)) 
+[out-of-the-box](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-metrics-meter) 
 using Spring Boot.
 
 ## Know Your Gauges
